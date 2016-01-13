@@ -1,4 +1,5 @@
 from random import choice
+from sys import argv
 
 
 def open_and_read_file(file_path):
@@ -12,8 +13,6 @@ def open_and_read_file(file_path):
     return contents
 
     
-
-
 def make_chains(text_string):
     """Takes input text as string; returns _dictionary_ of markov chains.
 
@@ -45,32 +44,32 @@ def make_chains(text_string):
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
 
-    text = ""
-
-    # import pdb 
-    # pdb.set_trace()
-
-    # for i in range(1,4):
-    while  True:
-        rand_key = choice(chains.keys())
-        new_key = (rand_key[1], choice(chains[rand_key]))
-        text = text + " " + rand_key[0] + " " + rand_key[1] + " " + new_key[1]
+    rand_key = choice(chains.keys())
+    text = rand_key[0] + " " + rand_key[1]
+    new_key = (rand_key[1], choice(chains[rand_key]))
+    
+    try:
+        while  True:
+            text = text + " " + new_key[1]
+            new_key = (new_key[1],choice(chains[new_key]))
         
-        if new_key[1] == "am?":
-            return text
-
-    return text
+    except KeyError: 
+        return text
 
 
-input_path = "green-eggs.txt"
+if len(argv) == 2:
+    input_path = argv[1]
 
-# Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+    # Open the file and turn it into one long string
+    input_text = open_and_read_file(input_path)
 
-# Get a Markov chain
-chains = make_chains(input_text)
+    # Get a Markov chain
+    chains = make_chains(input_text)
 
-# Produce random text
-random_text = make_text(chains)
+    # Produce random text
+    random_text = make_text(chains)
 
-print random_text
+    print random_text
+
+else:
+    print "Please provide a script and text file."
